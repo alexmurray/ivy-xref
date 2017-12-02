@@ -28,7 +28,7 @@
 
 ;;;; Setup
 
-;; (require 'ivy-xref)
+;; (require 'ivy-xref) ; unless installed from a package
 ;; (setq xref-show-xrefs-function 'ivy-xref-show-xrefs)
 
 ;;; Code:
@@ -52,6 +52,7 @@
           (push `(,candidate . ,location) collection))))
     collection))
 
+;;;###autoload
 (defun ivy-xref-show-xrefs (xrefs _alist)
   "Show the list of XREFS via ivy."
   (ivy-read "xref: " (ivy-xref-make-collection xrefs)
