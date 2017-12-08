@@ -24,6 +24,15 @@ To enable then simply add the following to your init file:
 (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)
 ```
 
+We recommend to use [use-package](https://github.com/jwiegley/use-package) to
+make this automatic:
+
+```emacs-lisp
+(use-package ivy-xref
+  :ensure t
+  :init (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
+```
+
 ### Manual installation
 
 If you would like to install the package manually, download or clone it and
