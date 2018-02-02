@@ -50,7 +50,7 @@
                                     (concat ":" (int-to-string line) ": "))
                                   summary))
           (push `(,candidate . ,location) collection))))
-    collection))
+    (nreverse collection)))
 
 ;;;###autoload
 (defun ivy-xref-show-xrefs (xrefs alist)
