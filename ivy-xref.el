@@ -63,11 +63,19 @@
   (let ((buffer (xref--show-xref-buffer xrefs alist)))
     (bury-buffer buffer)
     (delete-window)
-    (ivy-read "xref: " (ivy-xref-make-collection xrefs)
-              :require-match t
-              :sort t
-              :action #'(lambda (candidate)
-                          (xref--show-location (cdr candidate) 'quit)))
+    (let ((orig-buf (current-buffer))
+          (orig-pos (point))
+          done)
+      (ivy-read "xref: " (ivy-xref-make-collection xrefs)
+                :require-match t
+                :action (lambda (candidate)
+                          (setq done (eq 'ivy-done this-command))
+                          (xref--show-location (cdr candidate) 'quit))
+                :unwind (lambda ()
+                          (unless done
+                            (switch-to-buffer orig-buf)
+                            (goto-char orig-pos)))
+                :caller 'ivy-xref-show-xrefs))
     ;; honor the contact of xref--show-xref-buffer by returning its original
     ;; return value
     buffer))
