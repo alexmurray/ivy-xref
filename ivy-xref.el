@@ -61,8 +61,7 @@
   ;; immediately since we don't want to see it - see
   ;; https://github.com/alexmurray/ivy-xref/issues/2
   (let ((buffer (xref--show-xref-buffer xrefs alist)))
-    (bury-buffer buffer)
-    (delete-window)
+    (quit-window)
     (ivy-read "xref: " (ivy-xref-make-collection xrefs)
               :require-match t
               :sort t
