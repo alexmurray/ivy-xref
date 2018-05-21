@@ -35,6 +35,17 @@
 (require 'xref)
 (require 'ivy)
 
+(defgroup ivy-xref nil
+  "Select xref results using ivy."
+  :prefix "ivy-xref-"
+  :group 'ivy
+  :link '(url-link :tag "Github" "https://github.com/alexmurray/ivy-xref"))
+
+(defcustom ivy-xref-use-file-path nil
+  "Whether to display the file path."
+  :type 'boolean
+  :group 'ivy-xref)
+
 (defun ivy-xref-make-collection (xrefs)
   "Transform XREFS into a collection for display via `ivy-read'."
   (let ((collection nil))
@@ -44,6 +55,7 @@
               (file (xref-location-group location))
               (candidate nil))
           (setq candidate (concat
+                           (when ivy-xref-use-file-path file)
                            ;; use file name only
                            (car (reverse (split-string file "\\/")))
                                   (when (string= "integer" (type-of line))
