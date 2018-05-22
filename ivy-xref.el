@@ -56,12 +56,12 @@
               (candidate nil))
           (setq candidate (concat
                            (if ivy-xref-use-file-path
-			       file
-			     ;; use file name only
-			     (car (reverse (split-string file "\\/"))))
-			   (when (string= "integer" (type-of line))
-			     (concat ":" (int-to-string line) ": "))
-			   summary))
+                               file
+                             ;; use file name only
+                             (car (reverse (split-string file "\\/"))))
+                           (when (string= "integer" (type-of line))
+                             (concat ":" (int-to-string line) ": "))
+                           summary))
           (push `(,candidate . ,location) collection))))
     (nreverse collection)))
 
