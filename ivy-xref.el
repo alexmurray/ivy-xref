@@ -82,7 +82,12 @@
                 :require-match t
                 :action (lambda (candidate)
                           (setq done (eq 'ivy-done this-command))
-                          (xref--show-location (cdr candidate) 'quit))
+                          (condition-case err
+                              (let* ((marker (xref-location-marker (cdr candidate)))
+                                     (buf (marker-buffer marker)))
+                                (with-current-buffer buffer
+                                  (select-window (xref--show-pos-in-buf marker buf))))
+                            (user-error (message (error-message-string err)))))
                 :unwind (lambda ()
                           (unless done
                             (switch-to-buffer orig-buf)
