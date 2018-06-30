@@ -86,7 +86,11 @@
                               (let* ((marker (xref-location-marker (cdr candidate)))
                                      (buf (marker-buffer marker)))
                                 (with-current-buffer buffer
-                                  (select-window (xref--show-pos-in-buf marker buf))))
+                                  (select-window 
+                                   (condition-case _
+                                       (xref--show-pos-in-buf marker buf)
+                                     (wrong-number-of-arguments
+                                      (xref--show-pos-in-buf marker buf t))))))
                             (user-error (message (error-message-string err)))))
                 :unwind (lambda ()
                           (unless done
