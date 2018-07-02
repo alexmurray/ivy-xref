@@ -86,7 +86,12 @@
                               (let* ((marker (xref-location-marker (cdr candidate)))
                                      (buf (marker-buffer marker)))
                                 (with-current-buffer buffer
-                                  (select-window (xref--show-pos-in-buf marker buf))))
+                                  (select-window
+                                   ;; function signature changed in
+                                   ;; 2a973edeacefcabb9fd8024188b7e167f0f9a9b6
+                                   (if (version< emacs-version "26.0.90")
+                                       (xref--show-pos-in-buf marker buf t)
+                                     (xref--show-pos-in-buf marker buf)))))
                             (user-error (message (error-message-string err)))))
                 :unwind (lambda ()
                           (unless done
