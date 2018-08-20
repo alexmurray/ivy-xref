@@ -46,6 +46,11 @@
   :type 'boolean
   :group 'ivy-xref)
 
+(defcustom ivy-xref-remove-properties nil
+  "Whether to display the candidates with their original faces."
+  :type 'boolean
+  :group 'ivy-xref)
+
 (defun ivy-xref-make-collection (xrefs)
   "Transform XREFS into a collection for display via `ivy-read'."
   (let ((collection nil))
@@ -66,7 +71,10 @@
                       (concat (int-to-string line) ":"))
                     " ")
                    'face 'compilation-info)
-                  summary)))
+                  (progn
+                    (when ivy-xref-remove-properties
+                      (set-text-properties 0 (length summary) nil summary))
+                    summary))))
           (push `(,candidate . ,location) collection))))
     (nreverse collection)))
 
