@@ -51,20 +51,22 @@
   (let ((collection nil))
     (dolist (xref xrefs)
       (with-slots (summary location) xref
-        (let ((line (xref-location-line location))
-              (file (xref-location-group location))
-              (candidate nil))
-          (setq candidate (concat
-                           (propertize
-                            (concat
-                             (if ivy-xref-use-file-path
-                                 file
-                               ;; use file name only
-                               (car (reverse (split-string file "\\/"))))
-                             (when (string= "integer" (type-of line))
-                               (concat ":" (int-to-string line) ": ")))
-                            'face 'compilation-info)
-                           summary))
+        (let* ((line (xref-location-line location))
+               (file (xref-location-group location))
+               (candidate
+                 (concat
+                  (propertize
+                   (concat
+                    (if ivy-xref-use-file-path
+                        file
+                      ;; use file name only
+                      (car (reverse (split-string file "\\/"))))
+                    ":"
+                    (when (string= "integer" (type-of line))
+                      (concat (int-to-string line) ":"))
+                    " ")
+                   'face 'compilation-info)
+                  summary)))
           (push `(,candidate . ,location) collection))))
     (nreverse collection)))
 
