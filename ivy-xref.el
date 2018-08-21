@@ -46,7 +46,7 @@
   :type 'boolean
   :group 'ivy-xref)
 
-(defcustom ivy-xref-remove-properties nil
+(defcustom ivy-xref-remove-text-properties nil
   "Whether to display the candidates with their original faces."
   :type 'boolean
   :group 'ivy-xref)
@@ -70,7 +70,7 @@
                       ": "))
                    'face 'compilation-info)
                   (progn
-                    (when ivy-xref-remove-properties
+                    (when ivy-xref-remove-text-properties
                       (set-text-properties 0 (length summary) nil summary))
                     summary))))
           (push `(,candidate . ,location) collection))))
