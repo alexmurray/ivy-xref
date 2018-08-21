@@ -64,12 +64,10 @@
                    (concat
                     (if ivy-xref-use-file-path
                         file
-                      ;; use file name only
-                      (car (reverse (split-string file "\\/"))))
-                    ":"
-                    (when (string= "integer" (type-of line))
-                      (concat (int-to-string line) ":"))
-                    " ")
+                      (file-name-nondirectory file))
+                    (if (integerp line)
+                        (format ":%d: " line)
+                      ": "))
                    'face 'compilation-info)
                   (progn
                     (when ivy-xref-remove-properties
