@@ -118,5 +118,17 @@
     ;; return value
     buffer))
 
+;;;###autoload
+(defun ivy-xref-show-defs (fetcher alist)
+  (let ((xrefs (funcall fetcher)))
+    (cond
+     ((not (cdr xrefs))
+      (xref-pop-to-location (car xrefs)
+                            (assoc-default 'display-action alist)))
+     (t
+      (ivy-xref-show-xrefs fetcher
+                           (cons (cons 'fetched-xrefs xrefs)
+                                 alist))))))
+
 (provide 'ivy-xref)
 ;;; ivy-xref.el ends here

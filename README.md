@@ -21,6 +21,8 @@ To enable then simply add the following to your init file:
 
 ```emacs-lisp
 (require 'ivy-xref)
+(setq xref-show-definitions-function #'ivy-xref-show-xrefs)
+;; And optionally (for e.g. M-x project-find-regexp output):
 (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)
 ```
 
