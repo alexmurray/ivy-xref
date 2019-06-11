@@ -77,14 +77,19 @@
     (nreverse collection)))
 
 ;;;###autoload
-(defun ivy-xref-show-xrefs (xrefs alist)
-  "Show the list of XREFS and ALIST via ivy."
+(defun ivy-xref-show-xrefs (fetcher alist)
+  "Show the list of xrefs returned by FETCHER and ALIST via ivy."
   ;; call the original xref--show-xref-buffer so we can be used with
   ;; dired-do-find-regexp-and-replace etc which expects to use the normal xref
   ;; results buffer but then bury it and delete the window containing it
   ;; immediately since we don't want to see it - see
   ;; https://github.com/alexmurray/ivy-xref/issues/2
-  (let ((buffer (xref--show-xref-buffer xrefs alist)))
+  (let* ((xrefs (if (functionp fetcher)
+                    ;; Emacs 27
+                    (or (assoc-default 'fetched-xrefs alist)
+                        (funcall fetcher))
+                    fetcher))
+         (buffer (xref--show-xref-buffer fetcher alist)))
     (quit-window)
     (let ((orig-buf (current-buffer))
           (orig-pos (point))
@@ -112,6 +117,18 @@
     ;; honor the contact of xref--show-xref-buffer by returning its original
     ;; return value
     buffer))
+
+;;;###autoload
+(defun ivy-xref-show-defs (fetcher alist)
+  (let ((xrefs (funcall fetcher)))
+    (cond
+     ((not (cdr xrefs))
+      (xref-pop-to-location (car xrefs)
+                            (assoc-default 'display-action alist)))
+     (t
+      (ivy-xref-show-xrefs fetcher
+                           (cons (cons 'fetched-xrefs xrefs)
+                                 alist))))))
 
 (provide 'ivy-xref)
 ;;; ivy-xref.el ends here
