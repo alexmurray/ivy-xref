@@ -21,14 +21,14 @@ To enable then simply add the following to your init file:
 
 ```emacs-lisp
 (require 'ivy-xref)
-;; XRef initialization is different in Emacs 27
-(if (< emacs-major-version 27)
-    ;; Necessary in Emacs <27. In Emacs 27 it will affect all xref-based
-    ;; commands other than xref-find-definitions
-    ;; (e.g. project-find-regexp):
-    (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)
-  ;; Emacs 27 only:
+;; xref initialization is different in Emacs 27 - there are two different
+;; variables which can be set rather than just one
+(when (>= emacs-major-version 27)
   (setq xref-show-definitions-function #'ivy-xref-show-defs))
+;; Necessary in Emacs <27. In Emacs 27 it will affect all xref-based
+;; commands other than xref-find-definitions (e.g. project-find-regexp)
+;; as well
+(setq xref-show-xrefs-function #'ivy-xref-show-xrefs)
 ```
 
 We recommend to use [use-package](https://github.com/jwiegley/use-package) to
@@ -37,9 +37,15 @@ make this automatic:
 ```emacs-lisp
 (use-package ivy-xref
   :ensure t
-  :init (if (< emacs-major-version 27)
-            (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)
-          (setq xref-show-definitions-function #'ivy-xref-show-defs)))
+  :init
+  ;; xref initialization is different in Emacs 27 - there are two different
+  ;; variables which can be set rather than just one
+  (when (>= emacs-major-version 27)
+    (setq xref-show-definitions-function #'ivy-xref-show-defs))
+  ;; Necessary in Emacs <27. In Emacs 27 it will affect all xref-based
+  ;; commands other than xref-find-definitions (e.g. project-find-regexp)
+  ;; as well
+  (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
 ```
 
 ### Manual installation
