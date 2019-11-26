@@ -120,6 +120,8 @@
 
 ;;;###autoload
 (defun ivy-xref-show-defs (fetcher alist)
+  "Show the list of definitions returned by FETCHER and ALIST via ivy.
+Will jump to the definition if only one is found."
   (let ((xrefs (funcall fetcher)))
     (cond
      ((not (cdr xrefs))
