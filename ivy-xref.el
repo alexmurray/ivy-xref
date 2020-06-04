@@ -51,6 +51,11 @@
   :type 'boolean
   :group 'ivy-xref)
 
+(defvar ivy-xref-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-l") 'ivy-call-and-recenter)
+    map))
+
 (defun ivy-xref-make-collection (xrefs)
   "Transform XREFS into a collection for display via `ivy-read'."
   (let ((collection nil))
@@ -109,6 +114,7 @@
                                        (xref--show-pos-in-buf marker buf t)
                                      (xref--show-pos-in-buf marker buf)))))
                             (user-error (message (error-message-string err)))))
+		:keymap ivy-xref-map
                 :unwind (lambda ()
                           (unless done
                             (switch-to-buffer orig-buf)
