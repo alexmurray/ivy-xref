@@ -66,8 +66,8 @@
                         file
                       (file-name-nondirectory file))
                     (if (integerp line)
-                        (format ":%d: " line)
-                      ": "))
+                        (format ":%d:" line)
+                      ":"))
                    'face 'compilation-info)
                   (progn
                     (when ivy-xref-remove-text-properties
@@ -75,6 +75,13 @@
                     summary))))
           (push `(,candidate . ,location) collection))))
     (nreverse collection)))
+
+(defun ivy-xref-show-xrefs-occur (&optional cands)
+  "Generate a custom occur buffer for `ivy-xref-show-xrefs'"
+  (unless (eq major-mode 'ivy-occur-grep-mode)
+    (ivy-occur-grep-mode)
+    (setq default-directory (ivy-state-directory ivy-last)))
+  (swiper--occur-insert-lines (mapcar #'counsel--normalize-grep-match cands)))
 
 ;;;###autoload
 (defun ivy-xref-show-xrefs (fetcher alist)
@@ -113,8 +120,9 @@
                           (unless done
                             (switch-to-buffer orig-buf)
                             (goto-char orig-pos)))
+                :occur #'ivy-xref-show-xrefs-occur
                 :caller 'ivy-xref-show-xrefs))
-    ;; honor the contact of xref--show-xref-buffer by returning its original
+    ;; honor the contract of xref--show-xref-buffer by returning its original
     ;; return value
     buffer))
 
