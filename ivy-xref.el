@@ -76,13 +76,6 @@
           (push `(,candidate . ,location) collection))))
     (nreverse collection)))
 
-(defun ivy-xref-show-xrefs-occur (&optional cands)
-  "Generate a custom occur buffer for `ivy-xref-show-xrefs'"
-  (unless (eq major-mode 'ivy-occur-grep-mode)
-    (ivy-occur-grep-mode)
-    (setq default-directory (ivy-state-directory ivy-last)))
-  (swiper--occur-insert-lines (mapcar #'counsel--normalize-grep-match cands)))
-
 ;;;###autoload
 (defun ivy-xref-show-xrefs (fetcher alist)
   "Show the list of xrefs returned by FETCHER and ALIST via ivy."
@@ -120,7 +113,6 @@
                           (unless done
                             (switch-to-buffer orig-buf)
                             (goto-char orig-pos)))
-                :occur #'ivy-xref-show-xrefs-occur
                 :caller 'ivy-xref-show-xrefs))
     ;; honor the contract of xref--show-xref-buffer by returning its original
     ;; return value
@@ -139,6 +131,16 @@ Will jump to the definition if only one is found."
       (ivy-xref-show-xrefs fetcher
                            (cons (cons 'fetched-xrefs xrefs)
                                  alist))))))
+
+(defun ivy-xref-show-xrefs-occur (&optional cands)
+  "Generate a custom occur buffer for `ivy-xref-show-xrefs'"
+  (unless (eq major-mode 'ivy-occur-grep-mode)
+    (ivy-occur-grep-mode)
+    (setq default-directory (ivy-state-directory ivy-last)))
+  (swiper--occur-insert-lines (mapcar #'counsel--normalize-grep-match cands)))
+
+(ivy-configure 'ivy-xref-show-xrefs
+  :occur #'ivy-xref-show-xrefs-occur)
 
 (provide 'ivy-xref)
 ;;; ivy-xref.el ends here
