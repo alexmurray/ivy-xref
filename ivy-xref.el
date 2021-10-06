@@ -90,7 +90,7 @@
                         (funcall fetcher))
                     fetcher))
          (buffer (xref--show-xref-buffer fetcher alist)))
-    (quit-window t)
+    (quit-window)
     (let ((orig-buf (current-buffer))
           (orig-pos (point))
           done)
