@@ -110,6 +110,14 @@
                                        (xref--show-pos-in-buf marker buf t)
                                      (xref--show-pos-in-buf marker buf)))))
                             (user-error (message (error-message-string err)))))
+                :keymap
+                (let ((map (make-sparse-keymap)))
+                  (define-key map (kbd "C-c C-o")
+                    (lambda ()
+                      (interactive)
+                      (ivy-quit-and-run
+                        (xref--show-xref-buffer fetcher alist))))
+                  map)
                 :unwind (lambda ()
                           (unless done
                             (switch-to-buffer orig-buf)
