@@ -42,8 +42,13 @@
   :link '(url-link :tag "Github" "https://github.com/alexmurray/ivy-xref"))
 
 (defcustom ivy-xref-use-file-path nil
-  "Whether to display the file path."
-  :type 'boolean
+  "Style to display the file path.
+
+`nil', show base name only.
+`relative', show file name relative to project root.
+`t', show full path of file."
+  :type 'symbol
+  :options '(nil relative t)
   :group 'ivy-xref)
 
 (defcustom ivy-xref-remove-text-properties nil
@@ -51,9 +56,19 @@
   :type 'boolean
   :group 'ivy-xref)
 
+(defcustom ivy-xref-project-root-function nil
+  "Function to return root directory for current project.
+When `ivy-xref-use-file-path' is set to `relative', relative path will be used
+to construct candidates when making collection from xrefs.
+`projectile-project-root' may be a good candidate."
+  :type 'symbol
+  :group 'ivy-xref)
+
+
 (defun ivy-xref-make-collection (xrefs)
   "Transform XREFS into a collection for display via `ivy-read'."
-  (let ((collection nil))
+  (let ((collection nil)
+        (root (and ivy-xref-project-root-function (funcall ivy-xref-project-root-function))))
     (dolist (xref xrefs)
       (let* ((summary (xref-item-summary xref))
              (location  (xref-item-location xref))
@@ -63,9 +78,13 @@
               (concat
                (propertize
                 (concat
-                 (if ivy-xref-use-file-path
-                     file
-                   (file-name-nondirectory file))
+                 (cond
+                    ((not ivy-xref-use-file-path) (file-name-nondirectory file))
+                    ((and (equal ivy-xref-use-file-path 'relative)
+                          root
+                          (string-prefix-p root file))
+                     (substring file (length root)))
+                    (t file))
                  (if (integerp line)
                      (format ":%d: " line)
                    ": "))
