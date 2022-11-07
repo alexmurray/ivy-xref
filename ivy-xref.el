@@ -34,6 +34,7 @@
 ;;; Code:
 (require 'xref)
 (require 'ivy)
+(require 'pulse)
 
 (defgroup ivy-xref nil
   "Select xref results using ivy."
@@ -53,8 +54,16 @@
 
 (defvar ivy-xref-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-l") 'ivy-call-and-recenter)
+    (define-key map (kbd "C-l") 'ivy-xref-recenter)
     map))
+
+(defun ivy-xref-recenter ()
+  "Call action and recenter window according to the selected candidate."
+  (interactive)
+  (ivy-call)
+  (with-ivy-window
+    (recenter-top-bottom)
+    (pulse-momentary-highlight-one-line)))
 
 (defun ivy-xref-make-collection (xrefs)
   "Transform XREFS into a collection for display via `ivy-read'."
