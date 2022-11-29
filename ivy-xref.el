@@ -34,6 +34,7 @@
 ;;; Code:
 (require 'xref)
 (require 'ivy)
+(require 'pulse)
 
 (defgroup ivy-xref nil
   "Select xref results using ivy."
@@ -50,6 +51,19 @@
   "Whether to display the candidates with their original faces."
   :type 'boolean
   :group 'ivy-xref)
+
+(defvar ivy-xref-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-l") 'ivy-xref-recenter)
+    map))
+
+(defun ivy-xref-recenter ()
+  "Call action and recenter window according to the selected candidate."
+  (interactive)
+  (ivy-call)
+  (with-ivy-window
+    (recenter-top-bottom)
+    (pulse-momentary-highlight-one-line)))
 
 (defun ivy-xref-make-collection (xrefs)
   "Transform XREFS into a collection for display via `ivy-read'."
@@ -110,6 +124,7 @@
                                        (xref--show-pos-in-buf marker buf t)
                                      (xref--show-pos-in-buf marker buf)))))
                             (user-error (message (error-message-string err)))))
+		:keymap ivy-xref-map
                 :unwind (lambda ()
                           (unless done
                             (switch-to-buffer orig-buf)
